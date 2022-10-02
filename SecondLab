@@ -1,0 +1,49 @@
+import java.util.Scanner;
+public class SecondLab {
+    static int a;
+    static int b;
+    static float del_x;
+    static Scanner scanner = new Scanner(System.in);
+    public static double setX_I(int i){
+        return a + (i * del_x);
+    }
+    public static double function(double x){
+        return Math.pow(x, 2);
+    }
+    public static double exact(double x){
+        return Math.pow(x, 3) / 3;
+    }
+    public static double intervalFirst(int i){
+        return function(setX_I(i)) * (del_x);
+    }
+    public static double intervalSecond(int i){
+        return function(setX_I(i) + del_x) * (del_x);
+    }
+    public static double intervalTrapezoid(int i){
+        return (function(setX_I(i)) + (function(setX_I(i + 1)) - function(setX_I(i))) / 2) * del_x;
+    }
+    public static double intervalSpline(int i){
+        return function(setX_I(i)) + (((function(setX_I(i + 1)) - function(setX_I(i))) / del_x) * (del_x / 2));
+    }
+    public static void main(String[] args){
+        System.out.print("Enter a: ");
+        a = scanner.nextInt();
+        System.out.print("Enter b: ");
+        b = scanner.nextInt();
+        int N = 20;
+        del_x = (b - a) * 1.0f / N;
+        double sumFirst = 0, sumSecond = 0, sumTrapezoid = 0, sumSpline = 0;
+        for (int i = 0; i < N; i++) {
+            sumFirst = sumFirst + intervalFirst(i);
+            sumSecond = sumSecond + intervalSecond(i);
+            sumTrapezoid = sumTrapezoid + intervalTrapezoid(i);
+            sumSpline = sumSpline + intervalSpline(i);
+        }
+        double deltaFirst = Math.abs(exact(setX_I(N)) - sumFirst);
+        double deltaSecond = Math.abs(exact(setX_I(N)) - sumSecond);
+        double deltaTrapezoid = Math.abs(exact(setX_I(N)) - sumTrapezoid);
+        double deltaSpline = Math.abs(exact(setX_I(N)) - (sumSpline / N));
+       System.out.println("\nFirst error: " + deltaFirst + "\nSecond error: " + deltaSecond + "\nThird error: " + deltaTrapezoid + "\nFours error: " + deltaSpline);
+    }
+}
+
